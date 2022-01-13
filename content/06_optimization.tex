@@ -1,0 +1,77 @@
+\section{Optimization (Stoachistic Gradient Descent)}
+\begin{itemize}
+    \item Training or learning in AI often suggests an algorithm performing some sort of optimization
+    \item It is the problem of finding a set of inputs to an objective function that results in a maximum or minimum function evaluation
+    \item In our examples the \textbf{goal is to minimize the loss function}
+\end{itemize}
+
+\subsection{Error-landscape and Parameter-Space}
+\textbf{Parameter-Space}: Alle möglichen Kombinationen von Parametern (Gewichte) die möglich sind (AxB)
+\textbf{Error-Landscape}: Der Error (Loss), der im Parameter-Space (Error pro einzelne Kombination) entsteht ergibt eine Error-Landscape (E=AxB)
+
+\subsection{Gradient Descent}
+Gradient Descent ist ein fundamentaler Optimizer-Algorithmus: Der \textbf{Gradient} (=Steigung/Slope/Gewicht) wird so optimiert, das er in der "tiefsten Punkt" (Descent=Absenkung,Verminderung) in der Error Landscape landet.
+\begin{itemize}
+    \item Iterative Method to find the optimal values for its parameters
+    \item Each iteration, the model parameters are updated such as that the Loss (MSE) is reduced
+    \item versucht Optimum herauszuholen (Loss Function (MSE) möglichst klein machen)
+    \item führt nur wenige Berechnungen weit entfernt vom Optimum durch und erhöht die Anzahl der Berechnungen ($\alpha$ wird verkleinert) je näher man sich am Optimum befindet
+    \item Batch size controls the accuracy of the estimate of the error gradient when training neural networks.
+    \item \textit{Batch, Stochastic}, and \textit{Minibatch} gradient descent are the 3 main types of the learning algorithm.
+    \item \textbf{Batch Gradient Descent}: Batch size = total number of examples in the training dataset
+    \item \textbf{Stochastic Gradient Descent}: Batch size = 1
+    \item \textbf{Minibatch Gradient Descent}: Batch size = more than one \& less than the total number of examples in the training dataset.
+\end{itemize}
+
+\subsection{Stochastic Gradient Descent (SGD)}
+\begin{itemize}
+    \item At each iteration, the gradient is calculated on a randomly selected subset of the data
+    \item For a fixed learning rate, SGD does not converge
+    \item Daraus ergibt sich eine \textbf{Learning-Curve} (y-Achse=MSE, x-Achse=Iterationen)
+    \item So werden die Anzahl der Datenpunkte, für welche die Loss Function berechnet wird, stark reduziert und die Performance optimiert
+    \item The number $n$ (nr of samples, used to approximate the gradient) is called \textbf{batch size}. For the case of  $n=1$  we get the following equations:
+    \item (There's no ''best'' batch-size, but often mini-batches of size $n=32$ or $n=64$ are used.)
+    \item $new\_intercept (b) = old\_intercept (b) - step\_size$
+    \item $step size = slope (steigung=a) * learning rate (x_i)$
+    \begin{itemize}
+        \item das ganze Wiederholen, bis $step\_size$ sehr nahe an 0 ist (z.B. 0.000x)
+    \end{itemize}
+\end{itemize}
+\begin{align*}
+\textrm{E} &= \frac{1}{2N} \sum_{i=1}^{N} (y_i - (a \cdot x_i + b))^2 \\
+\frac{\partial \textrm{E}}{\partial \textcolor{red}{a}} &= \frac{1}{N} \sum_{i=1}^{N} (y_i - (a \cdot x_i + b)) (-x_i) \\
+\frac{\partial \textrm{E}}{\partial \textcolor{red}{b}} &= \frac{1}{N} \sum_{i=1}^{N} (y_i - (a \cdot x_i + b)) (-1) \\ 
+\end{align*}
+
+\textbf{Beispiel}: Modell mit zwei Parameter ($a$ und $b$) wird mit SGD optimiert. Nach Iteration $t$ befindet sich der Optimizer an $a=0.60$ und $b=0.40$. Folgende partielle Ableitungen des Losses $E$ werden ausgewertet:
+
+\begin{center}
+    $\frac{\partial E}{\partial \textcolor{red}{a}} = +0.20$\\
+    $\frac{\partial E}{\partial \textcolor{red}{b}} = -0.30$
+\end{center}
+
+Berechnen des Parametervektor zum Zeitpunkt $t+1$ mit $\alpha = 0.1$.
+\begin{center}
+    $ \begin{bmatrix}a \\ b\end{bmatrix}_{t+1} = \begin{bmatrix}a \\ b\end{bmatrix}_{t} - \alpha \begin{bmatrix}\frac{\partial E}{\partial a} \\ \frac{\partial E}{\partial b}\end{bmatrix} \biggr | \begin{bmatrix}a \\ b\end{bmatrix}_{t}$\\
+    $ \begin{pmatrix}0.6 \\ 0.4\end{pmatrix} - 0.1 \begin{pmatrix}0.2 \\ -0.3\end{pmatrix} = \begin{pmatrix}0.58 \\ 0.43\end{pmatrix}$
+\end{center}
+
+
+\subsubsection{Simulated Annealed SGD}
+\begin{itemize}
+    \item The learning rate $\alpha$ is reduced over time. This is called (simulated) annealing
+    \item There are different options (called schedules) how to reduce alpha over time. E.g. \textbf{Exponential Decay}
+\end{itemize}
+
+\subsubsection{General remarks on SGD}
+\begin{itemize}
+    \item Gradient-based methods können nur verwendet werden, wenn die \textit{Loss-Function} \textbf{ableitbar} ist
+    \item SGD kann nur mit einem Datenset arbeiten, was sehr ineffizient ist und selten benutzt wird
+    \item Batch- or mini-batch gradient-descent is usually used. Together with max number of iterations.
+    \item SGD muss der Gradient berechnen. Ist dies schwer?
+    \begin{itemize}
+        \item JA, wenn man es selbst tun muss und es viele Parameter gibt. (Neurale Netze können Millionen Parameter haben)
+        \item Nein, wenn man ein Modell hat und ein Machine Learning Framework nutzt (Tensorflow, Pytorch)
+    \end{itemize}
+    \item Gradient Descent ist ein Basis Baustein für viele weitere Algorithmen wie Adam, Adagrad, RMSProp, etc.
+\end{itemize}
